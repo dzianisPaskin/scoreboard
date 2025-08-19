@@ -19,7 +19,6 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "watch": true,
     "testEnvironment": "node",
     "moduleFileExtensions": [
       "ts",
