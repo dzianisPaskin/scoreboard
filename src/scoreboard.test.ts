@@ -7,6 +7,21 @@ describe("Scoreboard", () => {
     scoreboard = new Scoreboard();
   });
 
+  describe("getMatchById", () => {
+    it("should throw an error if match not found", () => {
+      expect(() => scoreboard["getMatchById"]("invalid-id")).toThrow(
+        'Match with ID "invalid-id" not found'
+      );
+    });
+
+    it("should return the match if found", () => {
+      const matchId = scoreboard.startNewMatch("Poland", "Germany");
+      const match = scoreboard["getMatchById"](matchId);
+      expect(match).toBeDefined();
+      expect(match.id).toBe(matchId);
+    });
+  });
+
   describe("startNewMatch", () => {
     it("should throw an error for invalid team names", () => {
       expect(() => scoreboard.startNewMatch("  ", "b")).toThrow(
@@ -23,16 +38,33 @@ describe("Scoreboard", () => {
       );
     });
 
-    it("should start a new match", () => {
-      scoreboard.startNewMatch("Poland", "Germany");
-      const match = scoreboard["matches"][0]!;
+    it("should start a new match and return its ID", () => {
+      const matchId = scoreboard.startNewMatch("Poland", "Germany");
+      const match = scoreboard["matches"].get(matchId)!;
 
       expect(scoreboard["matches"]).toBeDefined();
-      expect(scoreboard["matches"].length).toBe(1);
+      expect(scoreboard["matches"].size).toBe(1);
       expect(match.homeTeam).toBe("Poland");
       expect(match.awayTeam).toBe("Germany");
       expect(match.homeScore).toBe(0);
       expect(match.awayScore).toBe(0);
+    });
+  });
+
+  describe("updateScore", () => {
+    it("should throw an error for negative scores", () => {
+      const matchId = scoreboard.startNewMatch("Poland", "Germany");
+      expect(() => scoreboard.updateScore(matchId, -1, 2)).toThrow(
+        "Score cannot be negative"
+      );
+    });
+
+    it("should update the score of the match", () => {
+      const matchId = scoreboard.startNewMatch("Poland", "Germany");
+      scoreboard.updateScore(matchId, 1, 2);
+      const match = scoreboard["getMatchById"](matchId);
+      expect(match.homeScore).toBe(1);
+      expect(match.awayScore).toBe(2);
     });
   });
 });
