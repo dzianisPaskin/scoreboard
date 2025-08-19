@@ -1,20 +1,47 @@
 import { IMatch, IScoreboard } from "./types";
 
 export class Scoreboard implements IScoreboard {
-  private matches: IMatch[] = [];
+  private matches: Map<string, Match> = new Map();
 
-  public startNewMatch(homeTeam: string, awayTeam: string): void {
+  private getMatchById(matchId: string): Match {
+    const match = this.matches.get(matchId);
+
+    if (!match) {
+      throw new Error(`Match with ID "${matchId}" not found`);
+    }
+
+    return match;
+  }
+
+  public startNewMatch(homeTeam: string, awayTeam: string): string {
     if (!homeTeam.trim() || !awayTeam.trim()) {
       throw new Error("Invalid team names");
     }
 
-    if (homeTeam.trim() === awayTeam.trim()) {
+    if (homeTeam.trim().toLowerCase() === awayTeam.trim().toLowerCase()) {
       throw new Error("Teams must be different");
     }
 
     const newMatch = new Match(homeTeam, awayTeam);
 
-    this.matches.push(newMatch);
+    this.matches.set(newMatch.id, newMatch);
+
+    return newMatch.id;
+  }
+
+  public updateScore(
+    matchId: string,
+    homeScore: number,
+    awayScore: number
+  ): void {
+    if (homeScore < 0 || awayScore < 0) {
+      throw new Error("Score cannot be negative");
+    }
+
+    const match = this.getMatchById(matchId);
+
+    match.homeScore = homeScore;
+    match.awayScore = awayScore;
   }
 }
 
