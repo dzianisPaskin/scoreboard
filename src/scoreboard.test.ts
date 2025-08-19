@@ -67,6 +67,23 @@ describe("Scoreboard", () => {
       expect(match.awayScore).toBe(2);
     });
   });
+
+  describe("finishMatch", () => {
+    it("should throw an error if match not found", () => {
+      expect(() => scoreboard.finishMatch("invalid-id")).toThrow(
+        'Match with ID "invalid-id" not found.'
+      );
+    });
+
+    it("should finish the match if found", () => {
+      const matchId = scoreboard.startNewMatch("Poland", "Germany");
+      scoreboard.finishMatch(matchId);
+
+      expect(() => scoreboard["getMatchById"](matchId)).toThrow(
+        `Match with ID "${matchId}" not found`
+      );
+    });
+  });
 });
 
 describe("Match", () => {
