@@ -49,6 +49,21 @@ export class Scoreboard implements IScoreboard {
       throw new Error(`Match with ID "${matchId}" not found.`);
     }
   }
+
+  public getMatchSummaries(): IMatch[] {
+    const matchesArray = Array.from(this.matches.values());
+
+    return matchesArray.sort((a, b) => {
+      const totalScoreA = a.homeScore + a.awayScore;
+      const totalScoreB = b.homeScore + b.awayScore;
+
+      if (totalScoreB !== totalScoreA) {
+        return totalScoreB - totalScoreA;
+      }
+
+      return b.startedAt.getTime() - a.startedAt.getTime();
+    });
+  }
 }
 
 export class Match implements IMatch {
