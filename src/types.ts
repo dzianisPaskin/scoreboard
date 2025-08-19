@@ -10,4 +10,5 @@ export interface IMatch {
 export interface IScoreboard {
   startNewMatch(homeTeam: string, awayTeam: string): string;
   updateScore(matchId: string, homeScore: number, awayScore: number): void;
+  finishMatch(matchId: string): void;
 }

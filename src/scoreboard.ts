@@ -43,6 +43,12 @@ export class Scoreboard implements IScoreboard {
     match.homeScore = homeScore;
     match.awayScore = awayScore;
   }
+
+  public finishMatch(matchId: string): void {
+    if (!this.matches.delete(matchId)) {
+      throw new Error(`Match with ID "${matchId}" not found.`);
+    }
+  }
 }
 
 export class Match implements IMatch {
