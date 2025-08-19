@@ -84,6 +84,28 @@ describe("Scoreboard", () => {
       );
     });
   });
+
+  describe("getMatchSummaries", () => {
+    it("should return an empty array if no matches are found", () => {
+      const summary = scoreboard.getMatchSummaries();
+      expect(summary).toEqual([]);
+    });
+
+    it("should return a sorted array of match summaries", async () => {
+      const matchId1 = scoreboard.startNewMatch("Poland", "Germany");
+      scoreboard.updateScore(matchId1, 1, 2);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const matchId2 = scoreboard.startNewMatch("France", "Brazil");
+      scoreboard.updateScore(matchId2, 2, 1);
+
+      const summary = scoreboard.getMatchSummaries();
+      expect(summary).toHaveLength(2);
+      expect(summary[0]!.id).toBe(matchId2);
+      expect(summary[1]!.id).toBe(matchId1);
+    });
+  });
 });
 
 describe("Match", () => {
